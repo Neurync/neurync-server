@@ -3,15 +3,62 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
+  id              String   @id @default(uuid())
+  name            String
+  about           String?
+  email           String   @unique
+  password        String
+  neurodivergence String?
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  AlertMessages     AlertMessage[]
+  NonverbalMessages NonverbalMessage[]
+  Dangers           Danger[]
+  Helps             Help[]
 
   @@map("users")
+}
+
+model AlertMessage {
+  id           String  @id @default(uuid())
+  user         User    @relation(fields: [userId], references: [id])
+  userId       String  @map("user_id")
+  content      String
+  is_favorited Boolean @default(false)
+
+  @@map("alert_messages")
+}
+
+model NonverbalMessage {
+  id           String  @id @default(uuid())
+  content      String
+  user         User    @relation(fields: [userId], references: [id])
+  userId       String  @map("user_id")
+  emoji_icon   String
+  is_favorited Boolean @default(false)
+
+  @@map("nonverbal_messages")
+}
+
+model Danger {
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+  about  String
+
+  @@map("dangers")
+}
+
+model Help {
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+  about  String
+
+  @@map("helps")
 }
