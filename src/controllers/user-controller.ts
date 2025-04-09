@@ -52,7 +52,12 @@ export class UserController {
       return reply.status(401).send({ message: 'Invalid Credentials' })
     }
 
-    const token = jwtCallback({ userId, userEmail: email })
+    const token = jwtCallback({
+      userId,
+      userEmail: email,
+      userPassword: password,
+    })
+
     return reply.status(200).send({ token })
   }
 
