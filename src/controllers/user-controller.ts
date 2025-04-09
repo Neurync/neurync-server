@@ -53,9 +53,11 @@ export class UserController {
     }
 
     const token = jwtCallback({
-      userId,
-      userEmail: email,
-      userPassword: password,
+      user: {
+        id: userId,
+        email,
+        password,
+      },
     })
 
     return reply.status(200).send({ token })
