@@ -39,8 +39,30 @@ export class UserServices {
     return user.id
   }
 
-  async updateUser(id: string, name: string, email: string, password: string) {
-    await this.userRepository.updateUserById(id, name, email, password)
+  async updateUser(
+    id: string,
+    name: string,
+    about: string,
+    email: string,
+    password: string,
+    neurodivergence: string
+  ) {
+    await this.userRepository.updateUserById(
+      id,
+      name,
+      about,
+      email,
+      password,
+      neurodivergence
+    )
+  }
+
+  async updateAbout(id: string, about: string) {
+    await this.userRepository.updateAbout(id, about)
+  }
+
+  async updateNeurodivergence(id: string, neurodivergence: string) {
+    await this.userRepository.updateNeurodivergence(id, neurodivergence)
   }
 
   async deleteUser(id: string) {

@@ -46,6 +46,28 @@ export class PrismaUserRepository implements IUserRepository {
     })
   }
 
+  async updateAbout(id: string, about: string) {
+    await prisma.user.update({
+      data: {
+        about,
+      },
+      where: {
+        id,
+      },
+    })
+  }
+
+  async updateNeurodivergence(id: string, neurodivergence: string) {
+    await prisma.user.update({
+      data: {
+        neurodivergence,
+      },
+      where: {
+        id,
+      },
+    })
+  }
+
   async deleteUserById(id: string) {
     await prisma.user.delete({
       where: { id },

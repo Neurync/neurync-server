@@ -53,11 +53,9 @@ export class UserController {
     }
 
     const token = jwtCallback({
-      user: {
-        id: userId,
-        email,
-        password,
-      },
+      id: userId,
+      email,
+      password,
     })
 
     return reply.status(200).send({ token })
@@ -67,13 +65,50 @@ export class UserController {
     const bodySchema = z.object({
       name: z.string(),
       email: z.string(),
+      about: z.string(),
       password: z.string(),
+      neurodivergence: z.string(),
     })
 
-    const { name, email, password } = bodySchema.parse(req.body)
+    const { name, email, about, password, neurodivergence } = bodySchema.parse(
+      req.body
+    )
     const { id } = z.object({ id: z.string().uuid() }).parse(req.params)
-    await this.userServices.updateUser(id, name, email, password)
-    return reply.status(204)
+    await this.userServices.updateUser(
+      id,
+      name,
+      about,
+      email,
+      password,
+      neurodivergence
+    )
+    return reply.status(204).send()
+  }
+
+  async editAbout(req: FastifyRequest, reply: FastifyReply) {
+    const bodySchema = z.object({
+      about: z.string(),
+    })
+
+    const { id } = req.user
+    const { about } = bodySchema.parse(req.body)
+
+    await this.userServices.updateAbout(id, about)
+
+    return reply.status(204).send()
+  }
+
+  async editNeurodivergence(req: FastifyRequest, reply: FastifyReply) {
+    const bodySchema = z.object({
+      neurodivergence: z.string(),
+    })
+
+    const { id } = req.user
+    const { neurodivergence } = bodySchema.parse(req.body)
+
+    await this.userServices.updateNeurodivergence(id, neurodivergence)
+
+    return reply.status(204).send()
   }
 
   async deleteUser(req: FastifyRequest, reply: FastifyReply) {
@@ -83,6 +118,6 @@ export class UserController {
 
     const { id } = paramsSchema.parse(req.params)
     await this.userServices.deleteUser(id)
-    return reply.status(204)
+    return reply.status(204).send()
   }
 }
