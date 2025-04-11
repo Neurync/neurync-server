@@ -1,9 +1,6 @@
-import type { User } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { UserController } from '../controllers/user-controller'
-import { hashPassword, verifyPassword } from '../libs/bcrypt'
-import { prisma } from '../libs/prisma'
 import { PrismaUserRepository } from '../repositories/prisma/prisma-user-repository'
 
 export class UserRouter {
