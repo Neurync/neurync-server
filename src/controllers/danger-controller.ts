@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import type IDangerRepository from '../repositories/interfaces/IDangerRepository'
-import { DangerServices } from '../services/danger-service'
+import { DangerServices } from '../services/danger-services'
 
 export class DangerController {
   private dangerServices: DangerServices
