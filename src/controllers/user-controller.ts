@@ -73,7 +73,7 @@ export class UserController {
     const { name, email, about, password, neurodivergence } = bodySchema.parse(
       req.body
     )
-    const { id } = z.object({ id: z.string().uuid() }).parse(req.params)
+    const { id } = req.user
     await this.userServices.updateUser(
       id,
       name,
