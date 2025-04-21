@@ -8,7 +8,7 @@ export class HelpServices {
   }
 
   async getByUserId(userId: string) {
-    await this.helpRepository.getByUserId(userId)
+    return await this.helpRepository.getByUserId(userId)
   }
 
   async createHelp(userId: string, about: string) {
