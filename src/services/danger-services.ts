@@ -8,7 +8,7 @@ export class DangerServices {
   }
 
   async getByUserId(userId: string) {
-    await this.dangerRepository.getByUserId(userId)
+    return await this.dangerRepository.getByUserId(userId)
   }
 
   async createDanger(userId: string, about: string) {
