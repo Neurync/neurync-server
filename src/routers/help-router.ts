@@ -20,7 +20,9 @@ export class HelpRouter {
             'Retorna todas as formas de ajua de crise de um usuário, através de seu ID',
           summary: "Retorna os 'helps' de um usuário",
           operationId: 'getUserHelps',
-          params: z.object({}),
+          params: z.object({
+            userId: z.string().uuid(),
+          }),
           response: {
             200: z.array(
               z.object({

@@ -20,7 +20,9 @@ export class DangerRouter {
             'Retorna todos os gatilhos de crise de um usuário, através de seu ID',
           summary: "Retorna os 'dangers' de um usuário",
           operationId: 'getUserDangers',
-          params: z.object({}),
+          params: z.object({
+            userId: z.string().uuid(),
+          }),
           response: {
             200: z.array(
               z.object({
