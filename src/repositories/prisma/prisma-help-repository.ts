@@ -14,12 +14,12 @@ export class PrismaHelpRepository implements IHelpRepository {
     })
   }
 
-  async createHelp(userId: string, about: string) {
-    await prisma.help.create({
-      data: {
+  async createHelps(userId: string, helps: string[]) {
+    await prisma.help.createMany({
+      data: helps.map(help => ({
         userId,
-        about,
-      },
+        about: help,
+      })),
     })
   }
 

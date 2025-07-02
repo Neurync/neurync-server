@@ -11,8 +11,8 @@ export class HelpServices {
     return await this.helpRepository.getByUserId(userId)
   }
 
-  async createHelp(userId: string, about: string) {
-    await this.helpRepository.createHelp(userId, about)
+  async createHelps(userId: string, helps: string[]) {
+    await this.helpRepository.createHelps(userId, helps)
   }
 
   async editHelp(id: string, about: string) {

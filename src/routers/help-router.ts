@@ -43,24 +43,23 @@ export class HelpRouter {
       {
         schema: {
           tags: ['helps'],
-          description:
-            'Cria uma ajuda de crise do usuário. Requer autenticação',
-          summary: "Criar um 'help' de um usuário",
-          operationId: 'createUserHelp',
+          description: 'Cria ajudas de crise do usuário. Requer autenticação',
+          summary: "Criar 'helps' de um usuário",
+          operationId: 'createManyUserHelp',
           body: z.object({
             userId: z.string().uuid(),
-            about: z.string(),
+            helps: z.array(z.string()).min(1),
           }),
           response: {
             201: z.object({
-              message: z.literal('Help created'),
+              message: z.literal('Helps created'),
             }),
           },
         },
         preHandler: [app.authenticate],
       },
       async (req, reply) => {
-        await this.helpController.create(req, reply)
+        await this.helpController.createMany(req, reply)
       }
     )
 

@@ -43,24 +43,23 @@ export class DangerRouter {
       {
         schema: {
           tags: ['dangers'],
-          description:
-            'Cria um gatilho de crise do usuário. Requer autenticação',
-          summary: "Criar um 'danger' de um usuário",
-          operationId: 'createUserDanger',
+          description: 'Cria gatilhos de crise do usuário. Requer autenticação',
+          summary: "Cria 'dangers' de um usuário",
+          operationId: 'createManyUserDanger',
           body: z.object({
             userId: z.string().uuid(),
-            about: z.string(),
+            dangers: z.array(z.string()).min(1),
           }),
           response: {
             201: z.object({
-              message: z.literal('Danger created'),
+              message: z.literal('Dangers created'),
             }),
           },
         },
         preHandler: [app.authenticate],
       },
       async (req, reply) => {
-        await this.dangerController.create(req, reply)
+        await this.dangerController.createMany(req, reply)
       }
     )
 

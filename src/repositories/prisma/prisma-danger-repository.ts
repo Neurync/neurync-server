@@ -14,12 +14,12 @@ export class PrismaDangerRepository implements IDangerRepository {
     })
   }
 
-  async createDanger(userId: string, about: string) {
-    await prisma.danger.create({
-      data: {
+  async createDangers(userId: string, dangers: string[]) {
+    await prisma.danger.createMany({
+      data: dangers.map(danger => ({
         userId,
-        about,
-      },
+        about: danger,
+      })),
     })
   }
 

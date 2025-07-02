@@ -20,16 +20,16 @@ export class DangerController {
     return dangers
   }
 
-  async create(req: FastifyRequest, reply: FastifyReply) {
+  async createMany(req: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
-      about: z.string(),
+      dangers: z.array(z.string()).min(1),
     })
 
     const userId = req.user.id
-    const { about } = bodySchema.parse(req.body)
+    const { dangers } = bodySchema.parse(req.body)
 
-    await this.dangerServices.createDanger(userId, about)
-    return reply.status(201).send({ message: 'Danger created' })
+    await this.dangerServices.createDangers(userId, dangers)
+    return reply.status(201).send({ message: 'Dangers created' })
   }
 
   async edit(req: FastifyRequest, reply: FastifyReply) {

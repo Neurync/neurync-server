@@ -20,16 +20,16 @@ export class HelpController {
     return helps
   }
 
-  async create(req: FastifyRequest, reply: FastifyReply) {
+  async createMany(req: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
-      about: z.string(),
+      helps: z.array(z.string()).min(1),
     })
 
     const userId = req.user.id
-    const { about } = bodySchema.parse(req.body)
+    const { helps } = bodySchema.parse(req.body)
 
-    await this.helpServices.createHelp(userId, about)
-    return reply.status(201).send({ message: 'Help created' })
+    await this.helpServices.createHelps(userId, helps)
+    return reply.status(201).send({ message: 'Helps created' })
   }
 
   async edit(req: FastifyRequest, reply: FastifyReply) {

@@ -11,8 +11,8 @@ export class DangerServices {
     return await this.dangerRepository.getByUserId(userId)
   }
 
-  async createDanger(userId: string, about: string) {
-    await this.dangerRepository.createDanger(userId, about)
+  async createDangers(userId: string, dangers: string[]) {
+    await this.dangerRepository.createDangers(userId, dangers)
   }
 
   async editDanger(id: string, about: string) {
