@@ -2,3 +2,4 @@ node_modules
 .env
 plans.md
 swagger.json
+prisma/dev.db
