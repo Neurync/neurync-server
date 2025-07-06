@@ -1,18 +1,36 @@
 import { hashPassword, verifyPassword } from '../libs/bcrypt'
+import type IDangerRepository from '../repositories/interfaces/IDangerRepository'
+import type IHelpRepository from '../repositories/interfaces/IHelpRepository'
 import type IUserRepository from '../repositories/interfaces/IUserRepository'
 
 export class UserServices {
   private userRepository: IUserRepository
+  private helpsRepository: IHelpRepository
+  private dangersRepository: IDangerRepository
 
-  constructor(userRepository: IUserRepository) {
+  constructor(
+    userRepository: IUserRepository,
+    helpsRepository: IHelpRepository,
+    dangersRepository: IDangerRepository
+  ) {
     this.userRepository = userRepository
+    this.helpsRepository = helpsRepository
+    this.dangersRepository = dangersRepository
   }
 
   async getById(id: string) {
     return await this.userRepository.getUserById(id)
   }
 
-  async createUser(name: string, email: string, password: string) {
+  async createUser(
+    name: string,
+    email: string,
+    password: string,
+    helps?: string[],
+    dangers?: string[],
+    about?: string,
+    neurodivergence?: string
+  ) {
     const userAlreadyExists = await this.userRepository.getUserByEmail(email)
 
     if (userAlreadyExists) {
@@ -20,7 +38,18 @@ export class UserServices {
     }
 
     const hashedPassword = await hashPassword(password)
-    await this.userRepository.createUser(name, email, hashedPassword)
+
+    const userId = await this.userRepository.createUser(
+      name,
+      email,
+      hashedPassword,
+      about,
+      neurodivergence
+    )
+
+    if (helps) await this.helpsRepository.createHelps(userId, helps)
+
+    if (dangers) await this.dangersRepository.createDangers(userId, dangers)
   }
 
   async findUserToCreateJWT(email: string, password: string) {

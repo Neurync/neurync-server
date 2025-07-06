@@ -1,13 +1,19 @@
 import type { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { UserController } from '../controllers/user-controller'
+import { PrismaDangerRepository } from '../repositories/prisma/prisma-danger-repository'
+import { PrismaHelpRepository } from '../repositories/prisma/prisma-help-repository'
 import { PrismaUserRepository } from '../repositories/prisma/prisma-user-repository'
 
 export class UserRouter {
   private userController: UserController
 
   constructor() {
-    this.userController = new UserController(new PrismaUserRepository())
+    this.userController = new UserController(
+      new PrismaUserRepository(),
+      new PrismaHelpRepository(),
+      new PrismaDangerRepository()
+    )
   }
 
   routes = async (app: FastifyInstance) => {
@@ -50,6 +56,10 @@ export class UserRouter {
             name: z.string(),
             email: z.string().email(),
             password: z.string(),
+            about: z.string().optional(),
+            neurodivergence: z.string().optional(),
+            helps: z.array(z.string()).optional(),
+            dangers: z.array(z.string()).optional(),
           }),
           response: {
             201: z.object({

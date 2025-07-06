@@ -1,14 +1,24 @@
 import type { SignOptions, SignPayloadType } from '@fastify/jwt'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
+import type IDangerRepository from '../repositories/interfaces/IDangerRepository'
+import type IHelpRepository from '../repositories/interfaces/IHelpRepository'
 import type IUserRepository from '../repositories/interfaces/IUserRepository'
 import { UserServices } from '../services/user-services'
 
 export class UserController {
   private userServices: UserServices
 
-  constructor(userRepository: IUserRepository) {
-    this.userServices = new UserServices(userRepository)
+  constructor(
+    userRepository: IUserRepository,
+    helpRepository: IHelpRepository,
+    dangerRepository: IDangerRepository
+  ) {
+    this.userServices = new UserServices(
+      userRepository,
+      helpRepository,
+      dangerRepository
+    )
   }
 
   async getById(req: FastifyRequest) {
@@ -25,10 +35,25 @@ export class UserController {
       name: z.string(),
       email: z.string(),
       password: z.string(),
+      about: z.string().optional(),
+      neurodivergence: z.string().optional(),
+      helps: z.array(z.string()).optional(),
+      dangers: z.array(z.string()).optional(),
     })
 
-    const { name, email, password } = bodySchema.parse(req.body)
-    await this.userServices.createUser(name, email, password)
+    const { name, email, password, about, neurodivergence, helps, dangers } =
+      bodySchema.parse(req.body)
+
+    await this.userServices.createUser(
+      name,
+      email,
+      password,
+      helps,
+      dangers,
+      about,
+      neurodivergence
+    )
+
     return reply.status(201).send({ message: 'User created' })
   }
 

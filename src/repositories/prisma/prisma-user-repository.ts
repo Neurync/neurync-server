@@ -18,14 +18,24 @@ export class PrismaUserRepository implements IUserRepository {
     })
   }
 
-  async createUser(name: string, email: string, password: string) {
-    await prisma.user.create({
+  async createUser(
+    name: string,
+    email: string,
+    password: string,
+    about?: string,
+    neurodivergence?: string
+  ) {
+    const { id } = await prisma.user.create({
       data: {
         name,
         email,
         password,
+        about,
+        neurodivergence,
       },
     })
+
+    return id
   }
 
   async updateUserById(
