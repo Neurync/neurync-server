@@ -44,11 +44,6 @@ export class UserController {
     const { name, email, password, about, neurodivergence, helps, dangers } =
       bodySchema.parse(req.body)
 
-    const userAlreadyExists = await this.userServices.getByEmail(email)
-
-    if (userAlreadyExists)
-      reply.status(400).send({ message: 'User with that email already exists' })
-
     await this.userServices.createUser(
       name,
       email,
@@ -76,17 +71,7 @@ export class UserController {
     })
 
     const { email, password } = bodySchema.parse(req.body)
-    const userId = await this.userServices.findUserToCreateJWT(email, password)
-
-    if (!userId) {
-      return reply.status(401).send({ message: 'Invalid Credentials' })
-    }
-
-    const token = jwtCallback({
-      id: userId,
-      email,
-      password,
-    })
+    const token = await this.userServices.getJwt(email, password, jwtCallback)
 
     return reply.status(200).send({ token })
   }

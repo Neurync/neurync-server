@@ -1,3 +1,7 @@
+import type { SignOptions, SignPayloadType } from '@fastify/jwt'
+import { HttpBadRequestError } from '../errors/BadRequest'
+import { HttpNotFoundError } from '../errors/NotFound'
+import { HttpUnauthorizedError } from '../errors/Unauthorized'
 import { hashPassword, verifyPassword } from '../libs/bcrypt'
 import type IDangerRepository from '../repositories/interfaces/IDangerRepository'
 import type IHelpRepository from '../repositories/interfaces/IHelpRepository'
@@ -19,11 +23,20 @@ export class UserServices {
   }
 
   async getById(id: string) {
-    return await this.userRepository.getUserById(id)
+    const user = await this.userRepository.getUserById(id)
+
+    if (!user) throw new HttpNotFoundError(`User with id=${id} doesn't exist`)
+
+    return user
   }
 
   async getByEmail(email: string) {
-    return await this.userRepository.getUserByEmail(email)
+    const user = await this.userRepository.getUserByEmail(email)
+
+    if (!user)
+      throw new HttpNotFoundError(`User with email=${email} doesn't exist`)
+
+    return user
   }
 
   async createUser(
@@ -37,12 +50,10 @@ export class UserServices {
   ) {
     const userAlreadyExists = await this.userRepository.getUserByEmail(email)
 
-    if (userAlreadyExists) {
-      throw new Error('User with that email already exists')
-    }
+    if (userAlreadyExists)
+      throw new HttpBadRequestError('User with that email already exists')
 
     const hashedPassword = await hashPassword(password)
-
     const userId = await this.userRepository.createUser(
       name,
       email,
@@ -55,21 +66,31 @@ export class UserServices {
 
     if (dangers) await this.dangersRepository.createDangers(userId, dangers)
   }
-
-  async findUserToCreateJWT(email: string, password: string) {
+  async getJwt(
+    email: string,
+    password: string,
+    jwtCallback: (
+      payload: SignPayloadType,
+      options?: Partial<SignOptions>
+    ) => string
+  ) {
     const user = await this.userRepository.getUserByEmail(email)
 
-    if (!user) {
-      return
-    }
+    if (!user)
+      throw new HttpNotFoundError(`User with email=${email} doesn't exist`)
 
     const isCorrectPassword = await verifyPassword(password, user.password)
 
-    if (!isCorrectPassword) {
-      return
-    }
+    if (!isCorrectPassword)
+      throw new HttpUnauthorizedError(
+        `Incorrect password ('${password}') for the user with email=${email}`
+      )
 
-    return user.id
+    return jwtCallback({
+      id: user.id,
+      email,
+      password,
+    })
   }
 
   async updateUser(
@@ -80,6 +101,10 @@ export class UserServices {
     password: string,
     neurodivergence: string
   ) {
+    const user = this.userRepository.getUserById(id)
+
+    if (!user) throw new HttpNotFoundError(`User with id=${id} doesn't exist`)
+
     await this.userRepository.updateUserById(
       id,
       name,
@@ -91,14 +116,26 @@ export class UserServices {
   }
 
   async updateAbout(id: string, about: string) {
+    const user = this.userRepository.getUserById(id)
+
+    if (!user) throw new HttpNotFoundError(`User with id=${id} doesn't exist`)
+
     await this.userRepository.updateAbout(id, about)
   }
 
   async updateNeurodivergence(id: string, neurodivergence: string) {
+    const user = this.userRepository.getUserById(id)
+
+    if (!user) throw new HttpNotFoundError(`User with id=${id} doesn't exist`)
+
     await this.userRepository.updateNeurodivergence(id, neurodivergence)
   }
 
   async deleteUser(id: string) {
+    const user = this.userRepository.getUserById(id)
+
+    if (!user) throw new HttpNotFoundError(`User with id=${id} doesn't exist`)
+
     await this.userRepository.deleteUserById(id)
   }
 }
