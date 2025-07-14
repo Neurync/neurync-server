@@ -3,6 +3,10 @@ import { prisma } from '../../libs/prisma'
 import type IAlertMessageRepository from '../interfaces/IAlertMessageRepository'
 
 export class PrismaAlertMessageRepository implements IAlertMessageRepository {
+  async getById(id: string): Promise<AlertMessage | null> {
+    return await prisma.alertMessage.findUnique({ where: { id } })
+  }
+
   async getByUserId(userId: string): Promise<Partial<AlertMessage>[]> {
     return await prisma.alertMessage.findMany({
       where: {

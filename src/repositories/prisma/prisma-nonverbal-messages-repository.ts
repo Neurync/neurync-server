@@ -5,6 +5,10 @@ import type INonverbalMessageRepository from '../interfaces/INonverbalMessageRep
 export class PrismaNonverbalMessageRepository
   implements INonverbalMessageRepository
 {
+  async getById(id: string): Promise<NonverbalMessage | null> {
+    return await prisma.nonverbalMessage.findUnique({ where: { id } })
+  }
+
   async getByUserId(userId: string): Promise<Partial<NonverbalMessage>[]> {
     return await prisma.nonverbalMessage.findMany({
       where: {

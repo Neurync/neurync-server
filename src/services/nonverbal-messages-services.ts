@@ -1,4 +1,6 @@
 import type { NonverbalMessage, NonverbalMessageType } from '@prisma/client'
+import { HttpBadRequestError } from '../errors/BadRequest'
+import { HttpNotFoundError } from '../errors/NotFound'
 import type INonverbalMessageRepository from '../repositories/interfaces/INonverbalMessageRepository'
 
 export class NonverbalMessagesServices {
@@ -9,7 +11,12 @@ export class NonverbalMessagesServices {
   }
 
   async getByUserId(userId: string): Promise<Partial<NonverbalMessage>[]> {
-    return await this.nonverbalMessageRepository.getByUserId(userId)
+    const messages = await this.nonverbalMessageRepository.getByUserId(userId)
+    if (!messages || messages.length === 0)
+      throw new HttpNotFoundError(
+        `No nonverbal messages found for userId=${userId}`
+      )
+    return messages
   }
 
   async createNonverbalMessage(
@@ -18,6 +25,9 @@ export class NonverbalMessagesServices {
     emoji_icon: string,
     type: NonverbalMessageType
   ): Promise<void> {
+    if (!content.trim())
+      throw new HttpBadRequestError('Content cannot be empty')
+
     await this.nonverbalMessageRepository.createNonverbalMessage(
       userId,
       content,
@@ -34,6 +44,12 @@ export class NonverbalMessagesServices {
     type: NonverbalMessageType,
     is_favorited: boolean
   ): Promise<void> {
+    const exists = await this.nonverbalMessageRepository.getById(id)
+    if (!exists)
+      throw new HttpNotFoundError(
+        `Nonverbal message with id=${id} doesn't exist`
+      )
+
     await this.nonverbalMessageRepository.editNonverbalMessage(
       id,
       userId,
@@ -45,14 +61,32 @@ export class NonverbalMessagesServices {
   }
 
   async favoriteNonverbalMessage(id: string): Promise<void> {
+    const exists = await this.nonverbalMessageRepository.getById(id)
+    if (!exists)
+      throw new HttpNotFoundError(
+        `Nonverbal message with id=${id} doesn't exist`
+      )
+
     await this.nonverbalMessageRepository.favoriteNonverbalMessage(id)
   }
 
   async unfavoriteNonverbalMessage(id: string): Promise<void> {
+    const exists = await this.nonverbalMessageRepository.getById(id)
+    if (!exists)
+      throw new HttpNotFoundError(
+        `Nonverbal message with id=${id} doesn't exist`
+      )
+
     await this.nonverbalMessageRepository.unfavoriteNonverbalMessage(id)
   }
 
   async deleteNonverbalMessage(id: string): Promise<void> {
+    const exists = await this.nonverbalMessageRepository.getById(id)
+    if (!exists)
+      throw new HttpNotFoundError(
+        `Nonverbal message with id=${id} doesn't exist`
+      )
+
     await this.nonverbalMessageRepository.deleteNonverbalMessage(id)
   }
 }

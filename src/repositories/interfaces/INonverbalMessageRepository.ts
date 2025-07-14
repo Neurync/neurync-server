@@ -1,6 +1,7 @@
 import type { NonverbalMessage, NonverbalMessageType } from '@prisma/client'
 
 export default interface INonverbalMessageRepository {
+  getById: (id: string) => Promise<NonverbalMessage | null>
   getByUserId: (userId: string) => Promise<Partial<NonverbalMessage>[]>
   createNonverbalMessage: (
     userId: string,
