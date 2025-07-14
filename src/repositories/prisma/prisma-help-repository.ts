@@ -2,6 +2,10 @@ import { prisma } from '../../libs/prisma'
 import type IHelpRepository from '../interfaces/IHelpRepository'
 
 export class PrismaHelpRepository implements IHelpRepository {
+  async getById(id: string) {
+    return await prisma.help.findUnique({ where: { id } })
+  }
+
   async getByUserId(userId: string) {
     return await prisma.help.findMany({
       where: {

@@ -2,6 +2,10 @@ import { prisma } from '../../libs/prisma'
 import type IDangerRepository from '../interfaces/IDangerRepository'
 
 export class PrismaDangerRepository implements IDangerRepository {
+  async getById(id: string) {
+    return await prisma.danger.findUnique({ where: { id } })
+  }
+
   async getByUserId(userId: string) {
     return await prisma.danger.findMany({
       where: {
