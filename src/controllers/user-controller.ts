@@ -44,6 +44,11 @@ export class UserController {
     const { name, email, password, about, neurodivergence, helps, dangers } =
       bodySchema.parse(req.body)
 
+    const userAlreadyExists = await this.userServices.getByEmail(email)
+
+    if (userAlreadyExists)
+      reply.status(400).send({ message: 'User with that email already exists' })
+
     await this.userServices.createUser(
       name,
       email,

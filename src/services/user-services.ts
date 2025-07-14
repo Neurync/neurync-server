@@ -22,6 +22,10 @@ export class UserServices {
     return await this.userRepository.getUserById(id)
   }
 
+  async getByEmail(email: string) {
+    return await this.userRepository.getUserByEmail(email)
+  }
+
   async createUser(
     name: string,
     email: string,
