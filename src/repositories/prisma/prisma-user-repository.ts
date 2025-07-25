@@ -10,6 +10,18 @@ export class PrismaUserRepository implements IUserRepository {
     })
   }
 
+  async getUserByIdWithHelpsAndDangers(id: string) {
+    return await prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        Dangers: true,
+        Helps: true,
+      },
+    })
+  }
+
   async getUserByEmail(email: string) {
     return await prisma.user.findUnique({
       where: {

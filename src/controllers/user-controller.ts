@@ -30,6 +30,18 @@ export class UserController {
     const user = await this.userServices.getById(id)
     return user
   }
+
+  async getByIdSafeData(req: FastifyRequest) {
+    const paramsSchema = z.object({
+      id: z.string().uuid(),
+    })
+
+    const { id } = paramsSchema.parse(req.params)
+    const user = await this.userServices.getByIdSafeData(id)
+
+    return user
+  }
+
   async register(req: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
       name: z.string(),

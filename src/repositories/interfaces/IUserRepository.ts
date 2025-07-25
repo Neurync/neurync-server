@@ -1,7 +1,12 @@
-import type { User } from '@prisma/client'
+import type { Danger, Help, User } from '@prisma/client'
+
+type UserWithHelpsAndDangers = User & { Dangers: Danger[]; Helps: Help[] }
 
 export default interface IUserRepository {
   getUserById: (id: string) => Promise<User | null>
+  getUserByIdWithHelpsAndDangers: (
+    id: string
+  ) => Promise<UserWithHelpsAndDangers | null>
   getUserByEmail: (email: string) => Promise<User | null>
   createUser: (
     name: string,

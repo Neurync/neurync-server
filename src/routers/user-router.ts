@@ -38,11 +38,53 @@ export class UserRouter {
             }),
           },
         },
+        preHandler: [app.authenticate],
       },
       async req => {
         return await this.userController.getById(req)
       }
     )
+
+    app.get(
+      '/public/:id',
+      {
+        schema: {
+          tags: ['users'],
+          description:
+            'Retorna as informações seguras de um usuário, com determinado ID, como resposta',
+          summary: 'Retorna as informações seguras de um usuário',
+          operationId: 'getUserByIdSafeData',
+          params: z.object({
+            id: z.string().uuid(),
+          }),
+          response: {
+            200: z.object({
+              name: z.string(),
+              about: z.string().nullable(),
+              neurodivergence: z.string().nullable(),
+              dangers: z.array(
+                z.object({
+                  id: z.string().uuid(),
+                  about: z.string(),
+                  userId: z.string().uuid(),
+                })
+              ),
+              helps: z.array(
+                z.object({
+                  id: z.string().uuid(),
+                  about: z.string(),
+                  userId: z.string().uuid(),
+                })
+              ),
+            }),
+          },
+        },
+      },
+      async req => {
+        return await this.userController.getByIdSafeData(req)
+      }
+    )
+
     app.post(
       '/register',
       {
