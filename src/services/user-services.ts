@@ -23,11 +23,30 @@ export class UserServices {
   }
 
   async getById(id: string) {
-    const user = await this.userRepository.getUserById(id)
+    const user = await this.userRepository.getUserByIdWithHelpsAndDangers(id)
 
     if (!user) throw new HttpNotFoundError(`User with id=${id} doesn't exist`)
 
-    return user
+    const {
+      name,
+      email,
+      password,
+      about,
+      neurodivergence,
+      Dangers: dangers,
+      Helps: helps,
+    } = user
+
+    return {
+      id,
+      name,
+      email,
+      password,
+      about,
+      neurodivergence,
+      dangers,
+      helps,
+    }
   }
 
   async getByIdSafeData(id: string) {

@@ -35,6 +35,22 @@ export class UserRouter {
               name: z.string(),
               email: z.string().email(),
               password: z.string(),
+              about: z.string().nullable(),
+              neurodivergence: z.string().nullable(),
+              dangers: z.array(
+                z.object({
+                  id: z.string().uuid(),
+                  about: z.string(),
+                  userId: z.string().uuid(),
+                })
+              ),
+              helps: z.array(
+                z.object({
+                  id: z.string().uuid(),
+                  about: z.string(),
+                  userId: z.string().uuid(),
+                })
+              ),
             }),
           },
         },

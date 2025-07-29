@@ -28,6 +28,9 @@ export class UserController {
 
     const { id } = paramsSchema.parse(req.params)
     const user = await this.userServices.getById(id)
+
+    console.log(user)
+
     return user
   }
 
