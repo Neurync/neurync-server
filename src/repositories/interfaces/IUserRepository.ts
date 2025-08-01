@@ -18,12 +18,10 @@ export default interface IUserRepository {
   updateUserById: (
     id: string,
     name: string,
-    about: string,
+    about: string | null,
     email: string,
     password: string,
-    neurodivergence: string
+    neurodivergence: string | null
   ) => Promise<void>
-  updateAbout: (id: string, about: string) => Promise<void>
-  updateNeurodivergence: (id: string, neurodivergence: string) => Promise<void>
   deleteUserById: (id: string) => Promise<void>
 }

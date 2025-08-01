@@ -115,32 +115,6 @@ export class UserController {
     return reply.status(204).send()
   }
 
-  async editAbout(req: FastifyRequest, reply: FastifyReply) {
-    const bodySchema = z.object({
-      about: z.string(),
-    })
-
-    const { id } = req.user
-    const { about } = bodySchema.parse(req.body)
-
-    await this.userServices.updateAbout(id, about)
-
-    return reply.status(204).send()
-  }
-
-  async editNeurodivergence(req: FastifyRequest, reply: FastifyReply) {
-    const bodySchema = z.object({
-      neurodivergence: z.string(),
-    })
-
-    const { id } = req.user
-    const { neurodivergence } = bodySchema.parse(req.body)
-
-    await this.userServices.updateNeurodivergence(id, neurodivergence)
-
-    return reply.status(204).send()
-  }
-
   async deleteUser(req: FastifyRequest, reply: FastifyReply) {
     const paramsSchema = z.object({
       id: z.string().uuid(),

@@ -185,53 +185,6 @@ export class UserRouter {
       }
     )
 
-    app.patch(
-      '/about',
-      {
-        schema: {
-          tags: ['users'],
-          description: "Edita o 'about' (sobre) de um usuário.",
-          summary: "Edita o 'about' de um usuário.",
-          operationId: 'editUserAbout',
-          security: [{ BearerAuth: [] }],
-          body: z.object({
-            about: z.string(),
-          }),
-          response: {
-            204: z.void(),
-          },
-        },
-        preHandler: [app.authenticate],
-      },
-      async (req, reply) => {
-        await this.userController.editAbout(req, reply)
-      }
-    )
-
-    app.patch(
-      '/neurodivergence',
-      {
-        schema: {
-          tags: ['users'],
-          description:
-            "Edita o 'neurodivergence' (neurodivergencia) de um usuário.",
-          summary: "Edita o 'neurodivergence' de um usuário.",
-          operationId: 'editUserNeurodivergence',
-          security: [{ BearerAuth: [] }],
-          body: z.object({
-            neurodivergence: z.string(),
-          }),
-          response: {
-            204: z.void(),
-          },
-        },
-        preHandler: [app.authenticate],
-      },
-      async (req, reply) => {
-        await this.userController.editNeurodivergence(req, reply)
-      }
-    )
-
     app.delete(
       '/:id',
       {

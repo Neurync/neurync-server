@@ -150,22 +150,6 @@ export class UserServices {
     )
   }
 
-  async updateAbout(id: string, about: string) {
-    const user = this.userRepository.getUserById(id)
-
-    if (!user) throw new HttpNotFoundError(`User with id=${id} doesn't exist`)
-
-    await this.userRepository.updateAbout(id, about)
-  }
-
-  async updateNeurodivergence(id: string, neurodivergence: string) {
-    const user = this.userRepository.getUserById(id)
-
-    if (!user) throw new HttpNotFoundError(`User with id=${id} doesn't exist`)
-
-    await this.userRepository.updateNeurodivergence(id, neurodivergence)
-  }
-
   async deleteUser(id: string) {
     const user = this.userRepository.getUserById(id)
 
