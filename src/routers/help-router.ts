@@ -89,6 +89,35 @@ export class HelpRouter {
       }
     )
 
+    app.put(
+      '/edit-many',
+      {
+        schema: {
+          tags: ['helps'],
+          description:
+            'Edita confortos de crise do usuário. Requer autenticação',
+          summary: "Edita 'helps' de um usuário",
+          operationId: 'editManyUserHelp',
+          body: z.object({
+            helps: z.array(
+              z.object({
+                id: z.string().uuid(),
+                about: z.string().min(1),
+                userId: z.string().uuid(),
+              })
+            ),
+          }),
+          response: {
+            204: z.void(),
+          },
+        },
+        preHandler: [app.authenticate],
+      },
+      async (req, reply) => {
+        await this.helpController.editMany(req, reply)
+      }
+    )
+
     app.delete(
       '/:id',
       {

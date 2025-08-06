@@ -64,6 +64,35 @@ export class DangerRouter {
     )
 
     app.put(
+      '/edit-many',
+      {
+        schema: {
+          tags: ['dangers'],
+          description:
+            'Edita gatilhos de crise do usuário. Requer autenticação',
+          summary: "Edita 'dangers' de um usuário",
+          operationId: 'editManyUserDanger',
+          body: z.object({
+            dangers: z.array(
+              z.object({
+                id: z.string().uuid(),
+                about: z.string().min(1),
+                userId: z.string().uuid(),
+              })
+            ),
+          }),
+          response: {
+            204: z.void(),
+          },
+        },
+        preHandler: [app.authenticate],
+      },
+      async (req, reply) => {
+        await this.dangerController.editMany(req, reply)
+      }
+    )
+
+    app.put(
       '/:id',
       {
         schema: {

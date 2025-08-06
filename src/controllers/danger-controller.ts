@@ -48,6 +48,23 @@ export class DangerController {
     return reply.status(204).send()
   }
 
+  async editMany(req: FastifyRequest, reply: FastifyReply) {
+    const bodySchema = z.object({
+      dangers: z.array(
+        z.object({
+          id: z.string().uuid(),
+          about: z.string().min(1),
+          userId: z.string().uuid(),
+        })
+      ),
+    })
+
+    const { dangers } = bodySchema.parse(req.body)
+
+    await this.dangerServices.editManyDangers(dangers)
+    return reply.status(204).send()
+  }
+
   async delete(req: FastifyRequest, reply: FastifyReply) {
     const paramsSchema = z.object({
       id: z.string().uuid(),

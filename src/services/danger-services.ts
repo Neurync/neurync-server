@@ -1,3 +1,4 @@
+import type { Danger } from '@prisma/client'
 import { HttpBadRequestError } from '../errors/BadRequest'
 import { HttpNotFoundError } from '../errors/NotFound'
 import type IDangerRepository from '../repositories/interfaces/IDangerRepository'
@@ -31,6 +32,14 @@ export class DangerServices {
       throw new HttpNotFoundError(`Danger with id=${id} doesn't exist`)
 
     await this.dangerRepository.editDanger(id, about)
+  }
+
+  async editManyDangers(helps: Danger[]) {
+    await Promise.all(
+      helps.map(async help => {
+        this.editDanger(help.id, help.about)
+      })
+    )
   }
 
   async deleteDanger(id: string) {

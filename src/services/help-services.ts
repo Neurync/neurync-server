@@ -1,3 +1,4 @@
+import type { Help } from '@prisma/client'
 import { HttpBadRequestError } from '../errors/BadRequest'
 import { HttpNotFoundError } from '../errors/NotFound'
 import type IHelpRepository from '../repositories/interfaces/IHelpRepository'
@@ -31,6 +32,14 @@ export class HelpServices {
       throw new HttpNotFoundError(`Help with id=${id} doesn't exist`)
 
     await this.helpRepository.editHelp(id, about)
+  }
+
+  async editManyHelps(helps: Help[]) {
+    await Promise.all(
+      helps.map(async help => {
+        this.editHelp(help.id, help.about)
+      })
+    )
   }
 
   async deleteHelp(id: string) {
