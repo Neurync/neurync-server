@@ -42,10 +42,22 @@ export class HelpServices {
     )
   }
 
-  async deleteHelp(id: string) {
-    const exists = await this.helpRepository.getById(id)
-    if (!exists) throw new HttpNotFoundError(`Help with id=${id} doesn't exist`)
+  async deleteHelps(ids: string[]) {
+    if (!ids || ids.length === 0) {
+      throw new HttpBadRequestError('At least one help ID must be provided')
+    }
 
-    await this.helpRepository.deleteHelp(id)
+    const existingHelps = await Promise.all(
+      ids.map(id => this.helpRepository.getById(id))
+    )
+
+    const nonExistingIds = ids.filter((id, index) => !existingHelps[index])
+    if (nonExistingIds.length > 0) {
+      throw new HttpNotFoundError(
+        `The following help IDs do not exist: ${nonExistingIds.join(', ')}`
+      )
+    }
+
+    await this.helpRepository.deleteHelps(ids)
   }
 }

@@ -38,10 +38,12 @@ export class PrismaHelpRepository implements IHelpRepository {
     })
   }
 
-  async deleteHelp(id: string) {
-    await prisma.help.delete({
+  async deleteHelps(ids: string[]) {
+    await prisma.help.deleteMany({
       where: {
-        id,
+        id: {
+          in: ids,
+        },
       },
     })
   }

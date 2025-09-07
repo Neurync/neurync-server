@@ -66,13 +66,11 @@ export class HelpController {
   }
 
   async delete(req: FastifyRequest, reply: FastifyReply) {
-    const paramsSchema = z.object({
-      id: z.string().uuid(),
-    })
+    const bodySchema = z.object({ helps: z.array(z.string().uuid()) })
 
-    const { id } = paramsSchema.parse(req.params)
+    const { helps } = bodySchema.parse(req.body)
 
-    await this.helpServices.deleteHelp(id)
+    await this.helpServices.deleteHelps(helps)
     return reply.status(204).send()
   }
 }

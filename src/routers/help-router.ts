@@ -118,17 +118,17 @@ export class HelpRouter {
       }
     )
 
-    app.delete(
-      '/:id',
+    app.post(
+      '/delete',
       {
         schema: {
           tags: ['helps'],
           description:
-            'Deleta uma ajuda de crise do usuário. Requer autenticação',
-          summary: "Deleta um 'help' de um usuário",
-          operationId: 'deleteUserHelp',
-          params: z.object({
-            id: z.string().uuid(),
+            'Deleta várias ajudas de crise do usuário. Requer autenticação',
+          summary: "Deleta vários 'helps' de um usuário",
+          operationId: 'deleteUserHelps',
+          body: z.object({
+            helps: z.array(z.string().uuid()),
           }),
           response: {
             204: z.void(),
@@ -140,5 +140,28 @@ export class HelpRouter {
         await this.helpController.delete(req, reply)
       }
     )
+
+    // app.delete(
+    //   '/:id',
+    //   {
+    //     schema: {
+    //       tags: ['helps'],
+    //       description:
+    //         'Deleta uma ajuda de crise do usuário. Requer autenticação',
+    //       summary: "Deleta um 'help' de um usuário",
+    //       operationId: 'deleteUserHelp',
+    //       params: z.object({
+    //         id: z.string().uuid(),
+    //       }),
+    //       response: {
+    //         204: z.void(),
+    //       },
+    //     },
+    //     preHandler: [app.authenticate],
+    //   },
+    //   async (req, reply) => {
+    //     await this.helpController.delete(req, reply)
+    //   }
+    // )
   }
 }
