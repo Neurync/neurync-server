@@ -66,13 +66,11 @@ export class DangerController {
   }
 
   async delete(req: FastifyRequest, reply: FastifyReply) {
-    const paramsSchema = z.object({
-      id: z.string().uuid(),
-    })
+    const bodySchema = z.object({ dangers: z.array(z.string().uuid()) })
 
-    const { id } = paramsSchema.parse(req.params)
+    const { dangers } = bodySchema.parse(req.body)
 
-    await this.dangerServices.deleteDanger(id)
+    await this.dangerServices.deleteDangers(dangers)
     return reply.status(204).send()
   }
 }

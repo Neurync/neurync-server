@@ -38,10 +38,12 @@ export class PrismaDangerRepository implements IDangerRepository {
     })
   }
 
-  async deleteDanger(id: string) {
-    await prisma.danger.delete({
+  async deleteDangers(ids: string[]) {
+    await prisma.danger.deleteMany({
       where: {
-        id,
+        id: {
+          in: ids,
+        },
       },
     })
   }

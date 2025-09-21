@@ -118,17 +118,17 @@ export class DangerRouter {
       }
     )
 
-    app.delete(
-      '/:id',
+    app.post(
+      '/delete',
       {
         schema: {
           tags: ['dangers'],
           description:
-            'Deleta um gatilho de crise do usuário. Requer autenticação',
-          summary: "Deleta um 'danger' de um usuário",
-          operationId: 'deleteUserDanger',
-          params: z.object({
-            id: z.string().uuid(),
+            'Deleta vários gatilhos de crise do usuário. Requer autenticação',
+          summary: "Deleta vários 'dangers' de um usuário",
+          operationId: 'deleteUserDangers',
+          body: z.object({
+            dangers: z.array(z.string().uuid()),
           }),
           response: {
             204: z.void(),
@@ -140,5 +140,28 @@ export class DangerRouter {
         await this.dangerController.delete(req, reply)
       }
     )
+
+    // app.delete(
+    //   '/:id',
+    //   {
+    //     schema: {
+    //       tags: ['dangers'],
+    //       description:
+    //         'Deleta um gatilho de crise do usuário. Requer autenticação',
+    //       summary: "Deleta um 'danger' de um usuário",
+    //       operationId: 'deleteUserDanger',
+    //       params: z.object({
+    //         id: z.string().uuid(),
+    //       }),
+    //       response: {
+    //         204: z.void(),
+    //       },
+    //     },
+    //     preHandler: [app.authenticate],
+    //   },
+    //   async (req, reply) => {
+    //     await this.dangerController.delete(req, reply)
+    //   }
+    // )
   }
 }

@@ -42,11 +42,22 @@ export class DangerServices {
     )
   }
 
-  async deleteDanger(id: string) {
-    const exists = await this.dangerRepository.getById(id)
-    if (!exists)
-      throw new HttpNotFoundError(`Danger with id=${id} doesn't exist`)
+  async deleteDangers(ids: string[]) {
+    if (!ids || ids.length === 0) {
+      throw new HttpBadRequestError('At least one danger ID must be provided')
+    }
 
-    await this.dangerRepository.deleteDanger(id)
+    const existingDangers = await Promise.all(
+      ids.map(id => this.dangerRepository.getById(id))
+    )
+
+    const nonExistingIds = ids.filter((id, index) => !existingDangers[index])
+    if (nonExistingIds.length > 0) {
+      throw new HttpNotFoundError(
+        `The following danger IDs do not exist: ${nonExistingIds.join(', ')}`
+      )
+    }
+
+    await this.dangerRepository.deleteDangers(ids)
   }
 }
