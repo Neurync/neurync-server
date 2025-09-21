@@ -50,7 +50,7 @@ export class NonverbalMessageRouter {
           description:
             'Retorna todas as mensagens não verbais pré-prontas favoritadas de um usuário, com base no ID. Requer autenticação.',
           summary: 'Listar mensagens não verbais favoritadas de um usuário',
-          operationId: 'getUserNonverbalMessages',
+          operationId: 'getUserFavoritedsNonverbalMessages',
           response: {
             200: z.array(
               z.object({
