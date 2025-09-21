@@ -3,6 +3,7 @@ import { HttpBadRequestError } from '../errors/BadRequest'
 import { HttpNotFoundError } from '../errors/NotFound'
 import { HttpUnauthorizedError } from '../errors/Unauthorized'
 import { hashPassword, verifyPassword } from '../libs/bcrypt'
+import { prisma } from '../libs/prisma'
 import type IDangerRepository from '../repositories/interfaces/IDangerRepository'
 import type IHelpRepository from '../repositories/interfaces/IHelpRepository'
 import type IUserRepository from '../repositories/interfaces/IUserRepository'
@@ -100,7 +101,18 @@ export class UserServices {
     if (helps) await this.helpsRepository.createHelps(userId, helps)
 
     if (dangers) await this.dangersRepository.createDangers(userId, dangers)
+
+    const defaultNonverbalMessages =
+      await prisma.defaultonverbalMessage.findMany()
+
+    await prisma.userHasDefaultNonverbalMessage.createMany({
+      data: defaultNonverbalMessages.map(msg => ({
+        userId,
+        defaultNonverbalMessageId: msg.id,
+      })),
+    })
   }
+
   async getJwt(
     email: string,
     password: string,
