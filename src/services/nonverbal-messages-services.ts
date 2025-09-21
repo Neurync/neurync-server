@@ -1,6 +1,7 @@
 import type { NonverbalMessage, NonverbalMessageType } from '@prisma/client'
 import { HttpBadRequestError } from '../errors/BadRequest'
 import { HttpNotFoundError } from '../errors/NotFound'
+import { prisma } from '../libs/prisma'
 import type INonverbalMessageRepository from '../repositories/interfaces/INonverbalMessageRepository'
 
 export class NonverbalMessagesServices {
@@ -12,11 +13,48 @@ export class NonverbalMessagesServices {
 
   async getByUserId(userId: string): Promise<Partial<NonverbalMessage>[]> {
     const messages = await this.nonverbalMessageRepository.getByUserId(userId)
-    if (!messages || messages.length === 0)
-      throw new HttpNotFoundError(
-        `No nonverbal messages found for userId=${userId}`
-      )
-    return messages
+
+    const defaultMessages = (
+      await prisma.userHasDefaultNonverbalMessage.findMany({
+        where: {
+          userId,
+          userHas: true,
+        },
+        include: {
+          defaultNonverbalMessage: true,
+        },
+      })
+    ).map(msg => ({
+      ...msg.defaultNonverbalMessage,
+      is_favorited: msg.isFavorited,
+    }))
+
+    const response = [...messages, ...defaultMessages]
+    return response
+  }
+
+  async getFavoritedsByUserId(userId: string) {
+    const messages =
+      await this.nonverbalMessageRepository.getFavoritedsByUserId(userId)
+
+    const defaultMessages = (
+      await prisma.userHasDefaultNonverbalMessage.findMany({
+        where: {
+          userId,
+          userHas: true,
+          isFavorited: true,
+        },
+        include: {
+          defaultNonverbalMessage: true,
+        },
+      })
+    ).map(msg => ({
+      ...msg.defaultNonverbalMessage,
+      is_favorited: msg.isFavorited,
+    }))
+
+    const response = [...messages, ...defaultMessages]
+    return response
   }
 
   async createNonverbalMessage(

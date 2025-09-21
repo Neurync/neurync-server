@@ -24,6 +24,24 @@ export class PrismaNonverbalMessageRepository
     })
   }
 
+  async getFavoritedsByUserId(
+    userId: string
+  ): Promise<Partial<NonverbalMessage>[]> {
+    return await prisma.nonverbalMessage.findMany({
+      where: {
+        userId,
+        is_favorited: true,
+      },
+      select: {
+        id: true,
+        content: true,
+        emoji_icon: true,
+        type: true,
+        is_favorited: true,
+      },
+    })
+  }
+
   async createNonverbalMessage(
     userId: string,
     content: string,

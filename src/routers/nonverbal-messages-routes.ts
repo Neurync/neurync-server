@@ -26,7 +26,7 @@ export class NonverbalMessageRouter {
           response: {
             200: z.array(
               z.object({
-                id: z.string().uuid(),
+                id: z.string(),
                 content: z.string(),
                 emoji_icon: z.string(),
                 type: z.nativeEnum(NonverbalMessageType),
@@ -39,6 +39,37 @@ export class NonverbalMessageRouter {
       },
       async (req, reply) => {
         return await this.nonverbalMessageController.getByUserId(req, reply)
+      }
+    )
+
+    app.get(
+      '/favoriteds',
+      {
+        schema: {
+          tags: ['nonverbal message'],
+          description:
+            'Retorna todas as mensagens não verbais pré-prontas favoritadas de um usuário, com base no ID. Requer autenticação.',
+          summary: 'Listar mensagens não verbais favoritadas de um usuário',
+          operationId: 'getUserNonverbalMessages',
+          response: {
+            200: z.array(
+              z.object({
+                id: z.string(),
+                content: z.string(),
+                emoji_icon: z.string(),
+                type: z.nativeEnum(NonverbalMessageType),
+                is_favorited: z.literal(true),
+              })
+            ),
+          },
+        },
+        preHandler: [app.authenticate],
+      },
+      async (req, reply) => {
+        return await this.nonverbalMessageController.getFavoritedsByUserId(
+          req,
+          reply
+        )
       }
     )
 

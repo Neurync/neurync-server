@@ -19,6 +19,13 @@ export class NonverbalMessageController {
     return reply.status(200).send(messages)
   }
 
+  async getFavoritedsByUserId(req: FastifyRequest, reply: FastifyReply) {
+    const userId = req.user.id
+    const messages =
+      await this.nonverbalMessageServices.getFavoritedsByUserId(userId)
+    return reply.status(200).send(messages)
+  }
+
   async create(req: FastifyRequest, reply: FastifyReply) {
     const bodySchema = z.object({
       content: z.string(),
