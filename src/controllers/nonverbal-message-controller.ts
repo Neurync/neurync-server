@@ -106,4 +106,19 @@ export class NonverbalMessageController {
     await this.nonverbalMessageServices.deleteNonverbalMessage(id)
     return reply.status(204).send()
   }
+
+  async deleteDefault(req: FastifyRequest, reply: FastifyReply) {
+    const paramsSchema = z.object({
+      id: z.string(),
+    })
+
+    const userId = req.user.id
+    const { id } = paramsSchema.parse(req.params)
+
+    await this.nonverbalMessageServices.deleteDefaultNonverbalMessage(
+      id,
+      userId
+    )
+    return reply.status(204).send()
+  }
 }

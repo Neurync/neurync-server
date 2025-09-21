@@ -174,6 +174,29 @@ export class NonverbalMessageRouter {
       }
     )
 
+    app.patch(
+      '/delete/default-nonverbal-message/:id',
+      {
+        schema: {
+          tags: ['nonverbal message'],
+          description:
+            'Realiza o soft delete de uma mensagem não verbal padrão do usuário.',
+          summary: 'Deletar mensagem não verbal padrão',
+          operationId: 'deleteDefaultUserNonverbalMessage',
+          params: z.object({
+            id: z.string(),
+          }),
+          response: {
+            204: z.void(),
+          },
+        },
+        preHandler: [app.authenticate],
+      },
+      async (req, reply) => {
+        await this.nonverbalMessageController.deleteDefault(req, reply)
+      }
+    )
+
     app.delete(
       '/:id',
       {

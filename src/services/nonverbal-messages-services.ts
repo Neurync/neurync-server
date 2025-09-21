@@ -127,4 +127,30 @@ export class NonverbalMessagesServices {
 
     await this.nonverbalMessageRepository.deleteNonverbalMessage(id)
   }
+
+  async deleteDefaultNonverbalMessage(
+    id: string,
+    userId: string
+  ): Promise<void> {
+    const relation = await prisma.userHasDefaultNonverbalMessage.findFirst({
+      where: {
+        userId,
+        defaultNonverbalMessageId: id,
+      },
+    })
+
+    if (!relation)
+      throw new HttpNotFoundError(
+        'Not found any default nonverbal message with that id'
+      )
+
+    await prisma.userHasDefaultNonverbalMessage.update({
+      where: {
+        id: relation.id,
+      },
+      data: {
+        userHas: false,
+      },
+    })
+  }
 }
