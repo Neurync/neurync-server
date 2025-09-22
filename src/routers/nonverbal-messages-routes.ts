@@ -172,7 +172,7 @@ export class NonverbalMessageRouter {
           summary: 'Editar mensagem não verbal',
           operationId: 'editUserNonverbalMessage',
           params: z.object({
-            id: z.string().uuid(),
+            id: z.string(),
           }),
           body: z.object({
             content: z.string(),
@@ -200,7 +200,7 @@ export class NonverbalMessageRouter {
           summary: 'Favoritar mensagem não verbal',
           operationId: 'favoriteUserNonverbalMessage',
           params: z.object({
-            id: z.string().uuid(),
+            id: z.string(),
           }),
           response: {
             204: z.void(),
@@ -223,7 +223,7 @@ export class NonverbalMessageRouter {
           summary: 'Desfavoritar mensagem não verbal',
           operationId: 'unfavoriteUserNonverbalMessage',
           params: z.object({
-            id: z.string().uuid(),
+            id: z.string(),
           }),
           response: {
             204: z.void(),
@@ -268,7 +268,7 @@ export class NonverbalMessageRouter {
           summary: 'Deletar mensagem não verbal',
           operationId: 'deleteUserNonverbalMessage',
           params: z.object({
-            id: z.string().uuid(),
+            id: z.string(),
           }),
           response: {
             204: z.void(),

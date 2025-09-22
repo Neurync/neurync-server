@@ -61,7 +61,7 @@ export class NonverbalMessageController {
 
   async edit(req: FastifyRequest, reply: FastifyReply) {
     const paramsSchema = z.object({
-      id: z.string().uuid(),
+      id: z.string(),
     })
 
     const bodySchema = z.object({
@@ -90,29 +90,31 @@ export class NonverbalMessageController {
 
   async favorite(req: FastifyRequest, reply: FastifyReply) {
     const paramsSchema = z.object({
-      id: z.string().uuid(),
+      id: z.string(),
     })
 
     const { id } = paramsSchema.parse(req.params)
+    const userId = req.user.id
 
-    await this.nonverbalMessageServices.favoriteNonverbalMessage(id)
+    await this.nonverbalMessageServices.favoriteNonverbalMessage(id, userId)
     return reply.status(204).send()
   }
 
   async unfavorite(req: FastifyRequest, reply: FastifyReply) {
     const paramsSchema = z.object({
-      id: z.string().uuid(),
+      id: z.string(),
     })
 
     const { id } = paramsSchema.parse(req.params)
+    const userId = req.user.id
 
-    await this.nonverbalMessageServices.unfavoriteNonverbalMessage(id)
+    await this.nonverbalMessageServices.unfavoriteNonverbalMessage(id, userId)
     return reply.status(204).send()
   }
 
   async delete(req: FastifyRequest, reply: FastifyReply) {
     const paramsSchema = z.object({
-      id: z.string().uuid(),
+      id: z.string(),
     })
 
     const { id } = paramsSchema.parse(req.params)

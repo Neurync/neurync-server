@@ -110,22 +110,66 @@ export class NonverbalMessagesServices {
     )
   }
 
-  async favoriteNonverbalMessage(id: string): Promise<void> {
+  async favoriteNonverbalMessage(id: string, userId: string): Promise<void> {
     const exists = await this.nonverbalMessageRepository.getById(id)
-    if (!exists)
-      throw new HttpNotFoundError(
-        `Nonverbal message with id=${id} doesn't exist`
-      )
+
+    if (!exists) {
+      const relation = await prisma.userHasDefaultNonverbalMessage.findFirst({
+        where: {
+          userId,
+          defaultNonverbalMessageId: id,
+          userHas: true,
+        },
+      })
+
+      if (!relation)
+        throw new HttpNotFoundError(
+          `Nonverbal message with id=${id} doesn't exist`
+        )
+
+      await prisma.userHasDefaultNonverbalMessage.update({
+        where: {
+          id: relation.id,
+        },
+        data: {
+          isFavorited: true,
+        },
+      })
+
+      return
+    }
 
     await this.nonverbalMessageRepository.favoriteNonverbalMessage(id)
   }
 
-  async unfavoriteNonverbalMessage(id: string): Promise<void> {
+  async unfavoriteNonverbalMessage(id: string, userId: string): Promise<void> {
     const exists = await this.nonverbalMessageRepository.getById(id)
-    if (!exists)
-      throw new HttpNotFoundError(
-        `Nonverbal message with id=${id} doesn't exist`
-      )
+
+    if (!exists) {
+      const relation = await prisma.userHasDefaultNonverbalMessage.findFirst({
+        where: {
+          userId,
+          defaultNonverbalMessageId: id,
+          userHas: true,
+        },
+      })
+
+      if (!relation)
+        throw new HttpNotFoundError(
+          `Nonverbal message with id=${id} doesn't exist`
+        )
+
+      await prisma.userHasDefaultNonverbalMessage.update({
+        where: {
+          id: relation.id,
+        },
+        data: {
+          isFavorited: false,
+        },
+      })
+
+      return
+    }
 
     await this.nonverbalMessageRepository.unfavoriteNonverbalMessage(id)
   }
