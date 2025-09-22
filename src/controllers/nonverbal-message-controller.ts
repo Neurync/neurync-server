@@ -19,6 +19,20 @@ export class NonverbalMessageController {
     return reply.status(200).send(messages)
   }
 
+  async getFeelingsByUserId(req: FastifyRequest, reply: FastifyReply) {
+    const userId = req.user.id
+    const messages =
+      await this.nonverbalMessageServices.getFeelingsMessagesByUserId(userId)
+    return reply.status(200).send(messages)
+  }
+
+  async getProblemsByUserId(req: FastifyRequest, reply: FastifyReply) {
+    const userId = req.user.id
+    const messages =
+      await this.nonverbalMessageServices.getProblemsMessagesByUserId(userId)
+    return reply.status(200).send(messages)
+  }
+
   async getFavoritedsByUserId(req: FastifyRequest, reply: FastifyReply) {
     const userId = req.user.id
     const messages =

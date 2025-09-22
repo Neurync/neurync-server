@@ -33,6 +33,18 @@ export class NonverbalMessagesServices {
     return response
   }
 
+  async getFeelingsMessagesByUserId(userId: string) {
+    return (await this.getByUserId(userId)).filter(
+      message => message.type === 'feelings'
+    )
+  }
+
+  async getProblemsMessagesByUserId(userId: string) {
+    return (await this.getByUserId(userId)).filter(
+      message => message.type === 'problems'
+    )
+  }
+
   async getFavoritedsByUserId(userId: string) {
     const messages =
       await this.nonverbalMessageRepository.getFavoritedsByUserId(userId)

@@ -43,6 +43,68 @@ export class NonverbalMessageRouter {
     )
 
     app.get(
+      '/feelings',
+      {
+        schema: {
+          tags: ['nonverbal message'],
+          description:
+            'Retorna as mensagens não verbais do tipo "feelings" pré-prontas de um usuário, com base no ID. Requer autenticação.',
+          summary: 'Listar mensagens não verbais de sentimentos de um usuário',
+          operationId: 'getUserFeelingsNonverbalMessages',
+          response: {
+            200: z.array(
+              z.object({
+                id: z.string(),
+                content: z.string(),
+                emoji_icon: z.string(),
+                type: z.literal('feelings'),
+                is_favorited: z.boolean(),
+              })
+            ),
+          },
+        },
+        preHandler: [app.authenticate],
+      },
+      async (req, reply) => {
+        return await this.nonverbalMessageController.getFeelingsByUserId(
+          req,
+          reply
+        )
+      }
+    )
+
+    app.get(
+      '/problems',
+      {
+        schema: {
+          tags: ['nonverbal message'],
+          description:
+            'Retorna todas as mensagens não verbais do tipo "problems" pré-prontas de um usuário, com base no ID. Requer autenticação.',
+          summary: 'Listar mensagens não verbais de problemas de um usuário',
+          operationId: 'getUserProblemsNonverbalMessages',
+          response: {
+            200: z.array(
+              z.object({
+                id: z.string(),
+                content: z.string(),
+                emoji_icon: z.string(),
+                type: z.literal('problems'),
+                is_favorited: z.boolean(),
+              })
+            ),
+          },
+        },
+        preHandler: [app.authenticate],
+      },
+      async (req, reply) => {
+        return await this.nonverbalMessageController.getProblemsByUserId(
+          req,
+          reply
+        )
+      }
+    )
+
+    app.get(
       '/favoriteds',
       {
         schema: {
